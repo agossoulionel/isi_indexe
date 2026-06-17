@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sommeil & Bien-être Étudiant / Sleep & Student Wellbeing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primaire:#1E2A4A;
+  --secondaire:#4C5FD7;
+  --accent:#F2A65A;
+  --fond:#F7F8FC;
+  --vert:#2E8B6A;
+  --jaune:#E2A92E;
+  --orange:#E2722E;
+  --rouge:#C0392B;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--fond);color:#1a1a2a;}
+h1,h2,h3{font-family:'Poppins',sans-serif;}
+.barre-haut{
+  position:fixed;top:0;left:0;height:4px;
+  background:linear-gradient(90deg,var(--secondaire),var(--accent));
+  width:0%;transition:width .4s ease;z-index:1000;
+}
+header{
+  position:fixed;top:4px;left:0;right:0;
+  background:linear-gradient(135deg,var(--primaire),var(--secondaire));
+  color:#fff;padding:14px 20px;z-index:999;
+  box-shadow:0 2px 10px rgba(0,0,0,.18);
+}
+.entete-ligne{display:flex;justify-content:space-between;align-items:center;}
+.entete-titre{display:flex;align-items:center;gap:8px;}
+.entete-titre h1{margin:0;font-size:15px;font-weight:700;}
+.icone-lune{flex-shrink:0;}
+.btn-lang{
+  background:#fff;color:var(--primaire);border:none;border-radius:6px;
+  padding:6px 14px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif;
+}
+.etapes{display:flex;justify-content:center;gap:7px;margin-top:12px;}
+.etape{
+  width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.25);
+  color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;transition:.3s;
+}
+.etape.actif{background:var(--accent);color:var(--primaire);}
+.etape.complete{background:#fff;color:var(--primaire);}
+main{max-width:740px;margin:0 auto;padding:108px 16px 50px;}
+.page{display:none;}
+.page.actif{display:block;animation:apparition .35s ease;}
+@keyframes apparition{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.carte{
+  background:#fff;border-radius:14px;box-shadow:0 4px 16px rgba(30,42,74,.08);
+  padding:28px;margin-bottom:16px;
+}
+.carte h2{color:var(--primaire);margin-top:0;font-size:21px;}
+.carte h3{color:var(--secondaire);margin:0 0 10px;font-size:13px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;}
+.contexte{font-size:14.5px;line-height:1.6;color:#3a3a4a;}
+.objectif-general{
+  background:#F0F2FC;border-left:4px solid var(--secondaire);border-radius:8px;
+  padding:14px 16px;font-size:14px;font-weight:600;color:var(--primaire);margin:16px 0;
+}
+.liste-objectifs{font-size:13.5px;line-height:1.7;color:#3a3a4a;padding-left:20px;margin:10px 0 18px;}
+.meta-ligne{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:#555;margin:14px 0;}
+.note-confidentialite{
+  font-size:12.5px;color:#666;margin-top:18px;line-height:1.55;
+  border-top:1px dashed #ddd;padding-top:14px;
+}
+.btn-principal{
+  display:block;width:100%;background:var(--primaire);color:#fff;border:none;
+  border-radius:9px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;
+  margin-top:16px;font-family:'Poppins',sans-serif;letter-spacing:.2px;
+}
+.btn-principal:hover{opacity:.92;}
+.btn-secondaire{
+  display:block;width:100%;background:transparent;color:var(--primaire);
+  border:2px solid var(--primaire);border-radius:9px;padding:13px;font-size:15px;
+  font-weight:700;cursor:pointer;margin-top:10px;font-family:'Poppins',sans-serif;
+}
+.champ{margin-bottom:16px;}
+.champ label{display:block;font-weight:600;margin-bottom:6px;font-size:14px;color:#2a2a3a;}
+.champ select{
+  width:100%;padding:11px;border:1px solid #d8dae8;border-radius:8px;
+  font-size:15px;font-family:inherit;background:#fff;color:#1a1a2a;
+}
+.champ select:focus{outline:2px solid var(--secondaire);outline-offset:1px;}
+.erreur{color:var(--rouge);font-size:13px;margin-top:10px;display:none;font-weight:600;}
+.item-bloc{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #eee;}
+.item-bloc:last-child{border-bottom:none;}
+.item-num{color:var(--secondaire);font-weight:700;font-size:12px;letter-spacing:.5px;}
+.item-texte{font-weight:600;margin:6px 0 12px;font-size:15px;color:#1a1a2a;}
+.echelle{display:flex;gap:6px;flex-wrap:wrap;}
+.opt-label{
+  flex:1;min-width:58px;border:1px solid #d8dae8;border-radius:8px;
+  overflow:hidden;cursor:pointer;text-align:center;transition:.2s;
+}
+.opt-label:hover{border-color:var(--secondaire);}
+.opt-label input{position:absolute;opacity:0;width:0;height:0;}
+.opt-label span{display:block;padding:9px 4px;font-size:11px;font-weight:600;line-height:1.3;}
+.opt-label input:checked + span{background:var(--accent);color:var(--primaire);}
+.isi-soustitre{font-size:12.5px;color:#888;margin:-8px 0 16px;font-style:italic;}
+.jauge-conteneur{position:relative;height:36px;border-radius:18px;overflow:hidden;display:flex;margin:26px 0 6px;}
+.jauge-segment{flex:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.seg-vert{background:var(--vert);}
+.seg-jaune{background:var(--jaune);}
+.seg-orange{background:var(--orange);}
+.seg-rouge{background:var(--rouge);}
+.jauge-marqueur{
+  position:absolute;top:-11px;width:0;height:0;left:0%;
+  border-left:9px solid transparent;border-right:9px solid transparent;
+  border-top:11px solid var(--primaire);transform:translateX(-9px);
+  transition:left 1.1s cubic-bezier(.2,.8,.2,1);
+}
+.score-total{font-size:38px;font-weight:800;color:var(--primaire);text-align:center;margin:18px 0 4px;font-family:'Poppins',sans-serif;}
+.interpretation{text-align:center;font-size:15px;font-weight:700;padding:14px;border-radius:9px;margin:14px 0 6px;}
+.interpretation .cat{display:block;font-size:17px;margin-bottom:4px;}
+.interpretation.absence{background:#e8f6ef;color:var(--vert);}
+.interpretation.legere{background:#fdf6e3;color:var(--jaune);}
+.interpretation.moderee{background:#fdecdc;color:var(--orange);}
+.interpretation.severe{background:#fdecea;color:var(--rouge);}
+.pied-page{text-align:center;font-size:12px;color:#999;margin-top:30px;}
+.toast{
+  position:fixed;bottom:20px;right:20px;background:var(--vert);color:#fff;
+  padding:12px 20px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.25);
+  display:none;z-index:2000;font-size:14px;font-weight:600;max-width:260px;
+}
+.toast.erreur{background:var(--rouge);}
+@media print{
+  header,.barre-haut,.btn-secondaire,#p0,#p1,#p2,#p3{display:none !important;}
+  main{padding-top:10px;}
+}
+</style>
+</head>
+<body>
+<iframe name="_gs_frame" style="display:none" title="cadre-envoi-cache"></iframe>
+ 
+<div class="barre-haut" id="barreHaut"></div>
+ 
+<header>
+  <div class="entete-ligne">
+    <div class="entete-titre">
+      <svg class="icone-lune" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 14.5C18.74 15.16 17.31 15.5 15.8 15.5C10.7 15.5 6.5 11.3 6.5 6.2C6.5 4.69 6.84 3.26 7.5 2C4.1 3.36 1.5 6.86 1.5 11C1.5 16.8 6.2 21.5 12 21.5C16.14 21.5 19.64 18.9 21 15.5" fill="#F2A65A"/>
+      </svg>
+      <h1 id="txtHeader">Sommeil & Bien-être Étudiant</h1>
+    </div>
+    <button class="btn-lang" onclick="basculer()" id="btnLang">EN</button>
+  </div>
+  <div class="etapes">
+    <div class="etape actif" id="etape0">1</div>
+    <div class="etape" id="etape1">2</div>
+    <div class="etape" id="etape2">3</div>
+    <div class="etape" id="etape3">4</div>
+    <div class="etape" id="etape4">5</div>
+  </div>
+</header>
+ 
+<main>
+ 
+  <div class="page actif" id="p0">
+    <div class="carte">
+      <h2 id="p0Titre"></h2>
+      <p id="p0Institution" style="color:#666;font-size:13.5px;margin-top:-6px;"></p>
+      <p class="contexte" id="p0Contexte"></p>
+      <div class="objectif-general" id="p0ObjectifGeneral"></div>
+      <ul class="liste-objectifs" id="p0ListeObjectifs"></ul>
+      <div class="meta-ligne">
+        <span id="p0Duree"></span>
+      </div>
+      <button class="btn-principal" onclick="allerA(1)" id="p0Btn"></button>
+      <p class="note-confidentialite" id="p0Rgpd"></p>
+    </div>
+  </div>
+ 
+  <div class="page" id="p1">
+    <div class="carte">
+      <h2 id="p1Titre"></h2>
+      <div class="champ">
+        <label id="lblAge"></label>
+        <select id="age"></select>
+      </div>
+      <div class="champ">
+        <label id="lblSexe"></label>
+        <select id="sexe"></select>
+      </div>
+      <div class="champ">
+        <label id="lblFiliere"></label>
+        <select id="filiere"></select>
+      </div>
+      <div class="champ">
+        <label id="lblAnnee"></label>
+        <select id="annee"></select>
+      </div>
+      <div class="champ">
+        <label id="lblResidence"></label>
+        <select id="residence"></select>
+      </div>
+      <p class="erreur" id="erreurDemo"></p>
+      <button class="btn-principal" onclick="valDemo()" id="p1Btn"></button>
+    </div>
+  </div>
+ 
+  <div class="page" id="p2">
+    <div class="carte">
+      <h2 id="p2Titre"></h2>
+      <p class="contexte" id="p2Consigne"></p>
+      <div class="champ">
+        <label id="lblCafeine"></label>
+        <select id="cafeine"></select>
+      </div>
+      <div class="champ">
+        <label id="lblEcrans"></label>
+        <select id="ecrans"></select>
+      </div>
+      <div class="champ">
+        <label id="lblDureeSommeil"></label>
+        <select id="dureeSommeil"></select>
+      </div>
+      <div class="champ">
+        <label id="lblActivitePhysique"></label>
+        <select id="activitePhysique"></select>
+      </div>
+      <div class="champ">
+        <label id="lblStressAcademique"></label>
+        <select id="stressAcademique"></select>
+      </div>
+      <div class="champ">
+        <label id="lblChargeTravail"></label>
+        <select id="chargeTravail"></select>
+      </div>
+      <div class="champ">
+        <label id="lblTabac"></label>
+        <select id="tabac"></select>
+      </div>
+      <div class="champ">
+        <label id="lblAlcool"></label>
+        <select id="alcool"></select>
+      </div>
+      <div class="champ">
+        <label id="lblSieste"></label>
+        <select id="sieste"></select>
+      </div>
+      <div class="champ">
+        <label id="lblSomniferes"></label>
+        <select id="somniferes"></select>
+      </div>
+      <p class="erreur" id="erreurFacteurs"></p>
+      <button class="btn-principal" onclick="valFacteurs()" id="p2Btn"></button>
+    </div>
+  </div>
+ 
+  <div class="page" id="p3">
+    <div class="carte">
+      <h2 id="p3Titre"></h2>
+      <p class="isi-soustitre" id="p3SousTitre"></p>
+      <p class="contexte" id="p3Consigne"></p>
+      <div id="itemsISI"></div>
+      <p class="erreur" id="erreurISI"></p>
+      <button class="btn-principal" onclick="soumettre()" id="p3Btn"></button>
+    </div>
+  </div>
+ 
+  <div class="page" id="p4">
+    <div class="carte">
+      <h2 id="p4Titre"></h2>
+      <div class="score-total" id="scoreTotal"></div>
+      <div class="jauge-conteneur">
+        <div class="jauge-segment seg-vert">0–7</div>
+        <div class="jauge-segment seg-jaune">8–14</div>
+        <div class="jauge-segment seg-orange">15–21</div>
+        <div class="jauge-segment seg-rouge">22–28</div>
+        <div class="jauge-marqueur" id="jaugeMarqueur"></div>
+      </div>
+      <div class="interpretation" id="interpretationTxt"></div>
+      <p id="p4Merci"></p>
+      <button class="btn-secondaire" onclick="resetQ()" id="p4BtnReset"></button>
+      <button class="btn-principal" onclick="window.print()" id="p4BtnTelecharger"></button>
+    </div>
+  </div>
+ 
+</main>
+ 
+<div class="pied-page" id="piedPage"></div>
+ 
+<div class="toast" id="toast"></div>
+ 
+<script>
+// 1. URL Google Sheets (remplacée automatiquement à la cellule 4)
+var SHEETS_URL = "https://script.google.com/macros/s/AKfycbzzkTX7IToTocMe385ImIkGcp5jkSm776lhwlIPUBBAbV_cLNgdb6GCADAKXmX7Gv0Vrg/exec";
+ 
+// 2. Variables globales d'état
+var lng = "fr";
+var pageN = 0;
+var tDebut = Date.now();
+var demo = {};
+var facteurs = {};
+var reponsesISI = {};
+ 
+// 3. Objet de traductions
+var T = {
+  fr: {
+    header: "Sommeil & Bien-être Étudiant",
+    btnLang: "EN",
+    p0Titre: "Sommeil & Bien-être Étudiant",
+    p0Institution: "[Votre nom] — [Faculté / Université], Bénin",
+    p0Contexte: "Les étudiants en sciences de la santé sont particulièrement exposés aux troubles du sommeil en raison d'une charge académique importante, de stages cliniques exigeants et d'un usage intensif des écrans. Cette étude vise à mieux comprendre l'ampleur de ce phénomène et ses facteurs associés au sein de cette population.",
+    p0ObjectifGeneral: "Objectif général : déterminer la prévalence de l'insomnie et ses facteurs associés chez les étudiants en sciences de la santé au Bénin.",
+    p0ListeObjectifs: [
+      "Décrire les caractéristiques sociodémographiques des participants",
+      "Estimer la prévalence de l'insomnie à l'aide de l'échelle ISI",
+      "Identifier les facteurs académiques et liés au mode de vie associés à l'insomnie"
+    ],
+    p0Duree: "⏱ Durée estimée : 7 à 10 minutes",
+    p0Rgpd: "🔒 Vos réponses sont strictement anonymes et confidentielles. Aucune donnée nominative n'est collectée. Les informations recueillies seront utilisées exclusivement dans le cadre de ce travail de recherche académique.",
+    p0Btn: "Commencer le questionnaire →",
+    p1Titre: "Informations sociodémographiques",
+    lblAge: "Âge",
+    lblSexe: "Sexe",
+    lblFiliere: "Filière de formation",
+    lblAnnee: "Année d'étude",
+    lblResidence: "Lieu de résidence",
+    optAge: ["18-20 ans", "21-23 ans", "24-26 ans", "27-29 ans", "30 ans et plus"],
+    optSexe: ["Masculin", "Féminin", "Préfère ne pas répondre"],
+    optFiliere: ["Médecine", "Pharmacie", "Médecine dentaire", "Sciences infirmières", "Sage-femme / Obstétrique", "Kinésithérapie", "Techniques de laboratoire", "Autre"],
+    optAnnee: ["1ère année", "2ème année", "3ème année", "4ème année", "5ème année", "6ème année et plus"],
+    optResidence: ["Domicile familial", "Cité universitaire / résidence", "Logement loué (seul ou en colocation)", "Autre"],
+    erreurDemo: "Merci de remplir tous les champs avant de continuer.",
+    p1Btn: "Suivant →",
+    p2Titre: "Facteurs académiques et de mode de vie",
+    p2Consigne: "Les questions suivantes portent sur vos habitudes quotidiennes susceptibles d'influencer votre sommeil.",
+    lblCafeine: "Consommation de caféine (café, thé, boissons énergisantes)",
+    lblEcrans: "Temps d'écran (téléphone, ordinateur, TV) dans l'heure précédant le coucher",
+    lblDureeSommeil: "Durée habituelle de sommeil par nuit",
+    lblActivitePhysique: "Activité physique régulière (au moins 30 minutes)",
+    lblStressAcademique: "Niveau de stress académique perçu",
+    lblChargeTravail: "Charge de travail personnel quotidien hors cours (révisions, stages)",
+    lblTabac: "Consommation de tabac",
+    lblAlcool: "Consommation d'alcool",
+    lblSieste: "Sieste diurne (pendant la journée)",
+    lblSomniferes: "Utilisation de somnifères ou médicaments pour dormir",
+    optCafeine: ["Jamais", "1 à 2 fois par semaine", "3 à 5 fois par semaine", "Quotidiennement"],
+    optEcrans: ["Jamais ou rarement", "Parfois", "Souvent", "Toujours"],
+    optDureeSommeil: ["Moins de 5 heures", "5 à 6 heures", "7 à 8 heures", "Plus de 8 heures"],
+    optActivitePhysique: ["Jamais", "1 à 2 fois par semaine", "3 à 4 fois par semaine", "5 fois ou plus par semaine"],
+    optStressAcademique: ["Faible", "Modéré", "Élevé", "Très élevé"],
+    optChargeTravail: ["Moins de 2 heures", "2 à 4 heures", "4 à 6 heures", "Plus de 6 heures"],
+    optTabac: ["Non, jamais", "Ancien(ne) fumeur(se)", "Oui, occasionnellement", "Oui, quotidiennement"],
+    optAlcool: ["Jamais", "Occasionnellement", "Régulièrement (hebdomadaire)", "Quotidiennement"],
+    optSieste: ["Jamais", "Occasionnellement", "Régulièrement", "Tous les jours"],
+    optSomniferes: ["Jamais", "Occasionnellement", "Régulièrement"],
+    erreurFacteurs: "Merci de répondre à toutes les questions avant de continuer.",
+    p2Btn: "Suivant →",
+    p3Titre: "Index de Sévérité de l'Insomnie (ISI)",
+    p3SousTitre: "Échelle validée — C. Morin (1993)",
+    p3Consigne: "Pour chaque énoncé, indiquez le niveau qui correspond le mieux à votre situation au cours du dernier mois.",
+    isiItems: [
+      { texte: "Difficulté à s'endormir", echelle: ["Aucune", "Légère", "Moyenne", "Très", "Extrêmement"] },
+      { texte: "Difficulté à rester endormi(e)", echelle: ["Aucune", "Légère", "Moyenne", "Très", "Extrêmement"] },
+      { texte: "Problèmes de réveils trop tôt le matin", echelle: ["Aucune", "Légère", "Moyenne", "Très", "Extrêmement"] },
+      { texte: "Satisfaction par rapport à votre sommeil actuel", echelle: ["Très satisfait(e)", "Satisfait(e)", "Plutôt neutre", "Insatisfait(e)", "Très insatisfait(e)"] },
+      { texte: "Vos difficultés de sommeil perturbent votre fonctionnement quotidien (fatigue, concentration, mémoire, humeur)", echelle: ["Aucunement", "Légèrement", "Moyennement", "Très", "Extrêmement"] },
+      { texte: "Vos difficultés de sommeil sont apparentes pour les autres en termes de détérioration de votre qualité de vie", echelle: ["Aucunement", "Légèrement", "Moyennement", "Très", "Extrêmement"] },
+      { texte: "Vous êtes inquiet(ète)/préoccupé(e) à propos de vos difficultés de sommeil", echelle: ["Aucunement", "Légèrement", "Moyennement", "Très", "Extrêmement"] }
+    ],
+    erreurISI: "Merci de répondre à toutes les questions avant de soumettre.",
+    p3Btn: "Soumettre",
+    p4Titre: "Vos résultats",
+    scoreLabelPrefix: "Score ISI : ",
+    catAbsence: "Absence d'insomnie",
+    catLegere: "Insomnie légère",
+    catModeree: "Insomnie modérée",
+    catSevere: "Insomnie sévère",
+    msgAbsence: "Votre sommeil ne présente pas de signes d'insomnie significative.",
+    msgLegere: "Vos difficultés de sommeil sont d'intensité légère (sub-clinique). Une bonne hygiène de sommeil est recommandée.",
+    msgModeree: "Vos difficultés de sommeil sont d'intensité clinique modérée. Il est conseillé de consulter un professionnel de santé.",
+    msgSevere: "Vos difficultés de sommeil sont d'intensité clinique sévère. Une consultation rapide auprès d'un professionnel de santé du sommeil est recommandée.",
+    p4Merci: "Merci d'avoir participé à cette étude sur le sommeil des étudiants en sciences de la santé.",
+    p4BtnReset: "Recommencer",
+    p4BtnTelecharger: "Télécharger / Imprimer",
+    toastOk: "✓ Réponse enregistrée",
+    toastErreur: "✗ Erreur lors de l'enregistrement",
+    piedPage: "Index de Sévérité de l'Insomnie (ISI) — Morin, C. (1993) — Usage académique uniquement"
+  },
+  en: {
+    header: "Sleep & Student Wellbeing",
+    btnLang: "FR",
+    p0Titre: "Sleep & Student Wellbeing",
+    p0Institution: "[Your name] — [Faculty / University], Benin",
+    p0Contexte: "Health sciences students are particularly exposed to sleep disturbances due to heavy academic workloads, demanding clinical placements, and intensive screen use. This study aims to better understand the scope of this phenomenon and its associated factors within this population.",
+    p0ObjectifGeneral: "General objective: to determine the prevalence of insomnia and its associated factors among health sciences students in Benin.",
+    p0ListeObjectifs: [
+      "Describe the sociodemographic characteristics of participants",
+      "Estimate the prevalence of insomnia using the ISI scale",
+      "Identify academic and lifestyle factors associated with insomnia"
+    ],
+    p0Duree: "⏱ Estimated duration: 7 to 10 minutes",
+    p0Rgpd: "🔒 Your answers are strictly anonymous and confidential. No personally identifying data is collected. The information gathered will be used exclusively for this academic research project.",
+    p0Btn: "Start the questionnaire →",
+    p1Titre: "Sociodemographic Information",
+    lblAge: "Age",
+    lblSexe: "Sex",
+    lblFiliere: "Field of study",
+    lblAnnee: "Year of study",
+    lblResidence: "Place of residence",
+    optAge: ["18-20 years", "21-23 years", "24-26 years", "27-29 years", "30 years and above"],
+    optSexe: ["Male", "Female", "Prefer not to say"],
+    optFiliere: ["Medicine", "Pharmacy", "Dental medicine", "Nursing sciences", "Midwifery / Obstetrics", "Physiotherapy", "Laboratory techniques", "Other"],
+    optAnnee: ["1st year", "2nd year", "3rd year", "4th year", "5th year", "6th year and above"],
+    optResidence: ["Family home", "University residence hall", "Rented housing (alone or shared)", "Other"],
+    erreurDemo: "Please fill in all fields before continuing.",
+    p1Btn: "Next →",
+    p2Titre: "Academic and Lifestyle Factors",
+    p2Consigne: "The following questions concern your daily habits that may influence your sleep.",
+    lblCafeine: "Caffeine consumption (coffee, tea, energy drinks)",
+    lblEcrans: "Screen time (phone, computer, TV) in the hour before bedtime",
+    lblDureeSommeil: "Usual sleep duration per night",
+    lblActivitePhysique: "Regular physical activity (at least 30 minutes)",
+    lblStressAcademique: "Perceived academic stress level",
+    lblChargeTravail: "Daily personal workload outside class (study, internships)",
+    lblTabac: "Tobacco use",
+    lblAlcool: "Alcohol consumption",
+    lblSieste: "Daytime napping",
+    lblSomniferes: "Use of sleeping pills or sleep medication",
+    optCafeine: ["Never", "1-2 times per week", "3-5 times per week", "Daily"],
+    optEcrans: ["Never or rarely", "Sometimes", "Often", "Always"],
+    optDureeSommeil: ["Less than 5 hours", "5-6 hours", "7-8 hours", "More than 8 hours"],
+    optActivitePhysique: ["Never", "1-2 times per week", "3-4 times per week", "5 or more times per week"],
+    optStressAcademique: ["Low", "Moderate", "High", "Very high"],
+    optChargeTravail: ["Less than 2 hours", "2-4 hours", "4-6 hours", "More than 6 hours"],
+    optTabac: ["No, never", "Former smoker", "Yes, occasionally", "Yes, daily"],
+    optAlcool: ["Never", "Occasionally", "Regularly (weekly)", "Daily"],
+    optSieste: ["Never", "Occasionally", "Regularly", "Every day"],
+    optSomniferes: ["Never", "Occasionally", "Regularly"],
+    erreurFacteurs: "Please answer all questions before continuing.",
+    p2Btn: "Next →",
+    p3Titre: "Insomnia Severity Index (ISI)",
+    p3SousTitre: "Validated scale — C. Morin (1993)",
+    p3Consigne: "For each statement, indicate the level that best matches your situation over the past month.",
+    isiItems: [
+      { texte: "Difficulty falling asleep", echelle: ["None", "Mild", "Moderate", "Severe", "Very severe"] },
+      { texte: "Difficulty staying asleep", echelle: ["None", "Mild", "Moderate", "Severe", "Very severe"] },
+      { texte: "Problem waking up too early in the morning", echelle: ["None", "Mild", "Moderate", "Severe", "Very severe"] },
+      { texte: "Satisfaction with your current sleep pattern", echelle: ["Very satisfied", "Satisfied", "Somewhat neutral", "Dissatisfied", "Very dissatisfied"] },
+      { texte: "Your sleep difficulties interfere with your daily functioning (fatigue, concentration, memory, mood)", echelle: ["Not at all", "A little", "Somewhat", "Much", "Very much"] },
+      { texte: "Your sleep difficulties are noticeable to others in terms of impairing your quality of life", echelle: ["Not at all", "A little", "Somewhat", "Much", "Very much"] },
+      { texte: "You feel worried/distressed about your current sleep difficulties", echelle: ["Not at all", "A little", "Somewhat", "Much", "Very much"] }
+    ],
+    erreurISI: "Please answer all questions before submitting.",
+    p3Btn: "Submit",
+    p4Titre: "Your results",
+    scoreLabelPrefix: "ISI Score: ",
+    catAbsence: "No insomnia",
+    catLegere: "Mild insomnia",
+    catModeree: "Moderate insomnia",
+    catSevere: "Severe insomnia",
+    msgAbsence: "Your sleep does not show signs of significant insomnia.",
+    msgLegere: "Your sleep difficulties are mild (subthreshold). Good sleep hygiene practices are recommended.",
+    msgModeree: "Your sleep difficulties are of moderate clinical intensity. It is advisable to consult a healthcare professional.",
+    msgSevere: "Your sleep difficulties are of severe clinical intensity. Prompt consultation with a sleep health professional is recommended.",
+    p4Merci: "Thank you for participating in this study on the sleep of health sciences students.",
+    p4BtnReset: "Restart",
+    p4BtnTelecharger: "Download / Print",
+    toastOk: "✓ Response recorded",
+    toastErreur: "✗ Error while recording",
+    piedPage: "Insomnia Severity Index (ISI) — Morin, C. (1993) — For academic use only"
+  }
+};
+ 
+// 4. Navigation entre pages (n = numéro de page cible)
+function allerA(n) {
+  document.getElementById("p" + pageN).classList.remove("actif");
+  pageN = n;
+  document.getElementById("p" + pageN).classList.add("actif");
+  majPts();
+  window.scrollTo(0, 0);
+  if (n === 3) {
+    buildItems();
+  }
+}
+ 
+// 5. Mise à jour de la barre de progression et du stepper
+function majPts() {
+  var pourcentage = (pageN / 4) * 100;
+  document.getElementById("barreHaut").style.width = pourcentage + "%";
+ 
+  var i;
+  for (i = 0; i <= 4; i++) {
+    (function (idx) {
+      var el = document.getElementById("etape" + idx);
+      if (!el) { return; }
+      if (idx < pageN) {
+        el.className = "etape complete";
+      } else if (idx === pageN) {
+        el.className = "etape actif";
+      } else {
+        el.className = "etape";
+      }
+    })(i);
+  }
+}
+ 
+// 6. Application des traductions à l'interface
+function appliquer() {
+  var d = T[lng];
+ 
+  document.getElementById("txtHeader").textContent = d.header;
+  document.getElementById("btnLang").textContent = d.btnLang;
+ 
+  document.getElementById("p0Titre").textContent = d.p0Titre;
+  document.getElementById("p0Institution").textContent = d.p0Institution;
+  document.getElementById("p0Contexte").textContent = d.p0Contexte;
+  document.getElementById("p0ObjectifGeneral").textContent = d.p0ObjectifGeneral;
+  remplirListe("p0ListeObjectifs", d.p0ListeObjectifs);
+  document.getElementById("p0Duree").textContent = d.p0Duree;
+  document.getElementById("p0Rgpd").textContent = d.p0Rgpd;
+  document.getElementById("p0Btn").textContent = d.p0Btn;
+ 
+  document.getElementById("p1Titre").textContent = d.p1Titre;
+  document.getElementById("lblAge").textContent = d.lblAge;
+  document.getElementById("lblSexe").textContent = d.lblSexe;
+  document.getElementById("lblFiliere").textContent = d.lblFiliere;
+  document.getElementById("lblAnnee").textContent = d.lblAnnee;
+  document.getElementById("lblResidence").textContent = d.lblResidence;
+  document.getElementById("erreurDemo").textContent = d.erreurDemo;
+  document.getElementById("p1Btn").textContent = d.p1Btn;
+ 
+  remplirSelect("age", d.optAge);
+  remplirSelect("sexe", d.optSexe);
+  remplirSelect("filiere", d.optFiliere);
+  remplirSelect("annee", d.optAnnee);
+  remplirSelect("residence", d.optResidence);
+ 
+  document.getElementById("p2Titre").textContent = d.p2Titre;
+  document.getElementById("p2Consigne").textContent = d.p2Consigne;
+  document.getElementById("lblCafeine").textContent = d.lblCafeine;
+  document.getElementById("lblEcrans").textContent = d.lblEcrans;
+  document.getElementById("lblDureeSommeil").textContent = d.lblDureeSommeil;
+  document.getElementById("lblActivitePhysique").textContent = d.lblActivitePhysique;
+  document.getElementById("lblStressAcademique").textContent = d.lblStressAcademique;
+  document.getElementById("lblChargeTravail").textContent = d.lblChargeTravail;
+  document.getElementById("lblTabac").textContent = d.lblTabac;
+  document.getElementById("lblAlcool").textContent = d.lblAlcool;
+  document.getElementById("lblSieste").textContent = d.lblSieste;
+  document.getElementById("lblSomniferes").textContent = d.lblSomniferes;
+  document.getElementById("erreurFacteurs").textContent = d.erreurFacteurs;
+  document.getElementById("p2Btn").textContent = d.p2Btn;
+ 
+  remplirSelect("cafeine", d.optCafeine);
+  remplirSelect("ecrans", d.optEcrans);
+  remplirSelect("dureeSommeil", d.optDureeSommeil);
+  remplirSelect("activitePhysique", d.optActivitePhysique);
+  remplirSelect("stressAcademique", d.optStressAcademique);
+  remplirSelect("chargeTravail", d.optChargeTravail);
+  remplirSelect("tabac", d.optTabac);
+  remplirSelect("alcool", d.optAlcool);
+  remplirSelect("sieste", d.optSieste);
+  remplirSelect("somniferes", d.optSomniferes);
+ 
+  document.getElementById("p3Titre").textContent = d.p3Titre;
+  document.getElementById("p3SousTitre").textContent = d.p3SousTitre;
+  document.getElementById("p3Consigne").textContent = d.p3Consigne;
+  document.getElementById("erreurISI").textContent = d.erreurISI;
+  document.getElementById("p3Btn").textContent = d.p3Btn;
+ 
+  document.getElementById("p4Titre").textContent = d.p4Titre;
+  document.getElementById("p4Merci").textContent = d.p4Merci;
+  document.getElementById("p4BtnReset").textContent = d.p4BtnReset;
+  document.getElementById("p4BtnTelecharger").textContent = d.p4BtnTelecharger;
+  document.getElementById("piedPage").textContent = d.piedPage;
+ 
+  document.title = d.header;
+ 
+  if (pageN === 3) {
+    buildItems();
+  }
+}
+ 
+// Fonction utilitaire : remplit un <select> en conservant l'index choisi
+function remplirSelect(idChamp, options) {
+  var select = document.getElementById(idChamp);
+  var indexActuel = select.selectedIndex;
+  select.innerHTML = "";
+  var i;
+  for (i = 0; i < options.length; i++) {
+    (function (idx) {
+      var opt = document.createElement("option");
+      opt.value = idx;
+      opt.textContent = options[idx];
+      select.appendChild(opt);
+    })(i);
+  }
+  if (indexActuel >= 0 && indexActuel < options.length) {
+    select.selectedIndex = indexActuel;
+  } else {
+    select.selectedIndex = -1;
+  }
+}
+ 
+// Fonction utilitaire : remplit une liste <ul> à partir d'un tableau de textes
+function remplirListe(idListe, items) {
+  var ul = document.getElementById(idListe);
+  ul.innerHTML = "";
+  var i;
+  for (i = 0; i < items.length; i++) {
+    var li = document.createElement("li");
+    li.textContent = items[i];
+    ul.appendChild(li);
+  }
+}
+ 
+// 7. Basculer entre français et anglais
+function basculer() {
+  if (lng === "fr") {
+    lng = "en";
+  } else {
+    lng = "fr";
+  }
+  document.documentElement.setAttribute("lang", lng);
+  appliquer();
+}
+ 
+// 8. Validation de la page sociodémographique
+function valDemo() {
+  var age = document.getElementById("age").value;
+  var sexe = document.getElementById("sexe").value;
+  var filiere = document.getElementById("filiere").value;
+  var annee = document.getElementById("annee").value;
+  var residence = document.getElementById("residence").value;
+ 
+  if (age === "" || sexe === "" || filiere === "" || annee === "" || residence === "") {
+    document.getElementById("erreurDemo").style.display = "block";
+    return;
+  }
+  document.getElementById("erreurDemo").style.display = "none";
+ 
+  // Stockage avec libellés français canoniques, indépendants de la langue d'affichage
+  var optAgeFR = ["18-20 ans", "21-23 ans", "24-26 ans", "27-29 ans", "30 ans et plus"];
+  var optSexeFR = ["Masculin", "Féminin", "Préfère ne pas répondre"];
+  var optFiliereFR = ["Médecine", "Pharmacie", "Médecine dentaire", "Sciences infirmières", "Sage-femme / Obstétrique", "Kinésithérapie", "Techniques de laboratoire", "Autre"];
+  var optAnneeFR = ["1ère année", "2ème année", "3ème année", "4ème année", "5ème année", "6ème année et plus"];
+  var optResidenceFR = ["Domicile familial", "Cité universitaire / résidence", "Logement loué (seul ou en colocation)", "Autre"];
+ 
+  demo = {
+    age: optAgeFR[parseInt(age, 10)],
+    sexe: optSexeFR[parseInt(sexe, 10)],
+    filiere: optFiliereFR[parseInt(filiere, 10)],
+    annee: optAnneeFR[parseInt(annee, 10)],
+    residence: optResidenceFR[parseInt(residence, 10)]
+  };
+ 
+  allerA(2);
+}
+ 
+// 9. Validation de la page des facteurs de mode de vie / académiques
+function valFacteurs() {
+  var ids = ["cafeine", "ecrans", "dureeSommeil", "activitePhysique", "stressAcademique", "chargeTravail", "tabac", "alcool", "sieste", "somniferes"];
+  var valeurs = {};
+  var complet = true;
+  var i;
+ 
+  for (i = 0; i < ids.length; i++) {
+    var v = document.getElementById(ids[i]).value;
+    if (v === "") {
+      complet = false;
+    }
+    valeurs[ids[i]] = v;
+  }
+ 
+  if (!complet) {
+    document.getElementById("erreurFacteurs").style.display = "block";
+    return;
+  }
+  document.getElementById("erreurFacteurs").style.display = "none";
+ 
+  // Libellés français canoniques pour chaque facteur, indépendants de la langue d'affichage
+  var optionsFR = {
+    cafeine: ["Jamais", "1 à 2 fois par semaine", "3 à 5 fois par semaine", "Quotidiennement"],
+    ecrans: ["Jamais ou rarement", "Parfois", "Souvent", "Toujours"],
+    dureeSommeil: ["Moins de 5 heures", "5 à 6 heures", "7 à 8 heures", "Plus de 8 heures"],
+    activitePhysique: ["Jamais", "1 à 2 fois par semaine", "3 à 4 fois par semaine", "5 fois ou plus par semaine"],
+    stressAcademique: ["Faible", "Modéré", "Élevé", "Très élevé"],
+    chargeTravail: ["Moins de 2 heures", "2 à 4 heures", "4 à 6 heures", "Plus de 6 heures"],
+    tabac: ["Non, jamais", "Ancien(ne) fumeur(se)", "Oui, occasionnellement", "Oui, quotidiennement"],
+    alcool: ["Jamais", "Occasionnellement", "Régulièrement (hebdomadaire)", "Quotidiennement"],
+    sieste: ["Jamais", "Occasionnellement", "Régulièrement", "Tous les jours"],
+    somniferes: ["Jamais", "Occasionnellement", "Régulièrement"]
+  };
+ 
+  facteurs = {};
+  for (i = 0; i < ids.length; i++) {
+    var cle = ids[i];
+    facteurs[cle] = optionsFR[cle][parseInt(valeurs[cle], 10)];
+  }
+ 
+  allerA(3);
+}
+ 
+// 10. Construction dynamique des 7 items de l'échelle ISI
+function buildItems() {
+  var conteneur = document.getElementById("itemsISI");
+  conteneur.innerHTML = "";
+  var items = T[lng].isiItems;
+  var i;
+ 
+  for (i = 0; i < 7; i++) {
+    (function (idx) {
+      var item = items[idx];
+      var bloc = document.createElement("div");
+      bloc.className = "item-bloc";
+ 
+      var numero = document.createElement("div");
+      numero.className = "item-num";
+      numero.textContent = (idx + 1) + " / 7";
+      bloc.appendChild(numero);
+ 
+      var texte = document.createElement("div");
+      texte.className = "item-texte";
+      texte.textContent = item.texte;
+      bloc.appendChild(texte);
+ 
+      var echelleDiv = document.createElement("div");
+      echelleDiv.className = "echelle";
+ 
+      var j;
+      for (j = 0; j < 5; j++) {
+        (function (val) {
+          var label = document.createElement("label");
+          label.className = "opt-label";
+ 
+          var input = document.createElement("input");
+          input.type = "radio";
+          input.name = "isi_" + idx;
+          input.value = val;
+          if (reponsesISI["isi_" + idx] === val) {
+            input.checked = true;
+          }
+          input.onchange = function () {
+            reponsesISI["isi_" + idx] = val;
+          };
+ 
+          var span = document.createElement("span");
+          span.textContent = item.echelle[val];
+ 
+          label.appendChild(input);
+          label.appendChild(span);
+          echelleDiv.appendChild(label);
+        })(j);
+      }
+ 
+      bloc.appendChild(echelleDiv);
+      conteneur.appendChild(bloc);
+    })(i);
+  }
+}
+ 
+// 11. Soumission du questionnaire, calcul du score ISI et envoi des données
+function soumettre() {
+  var i;
+  var total = 0;
+  var complet = true;
+ 
+  for (i = 0; i < 7; i++) {
+    if (reponsesISI["isi_" + i] === undefined) {
+      complet = false;
+    } else {
+      total = total + reponsesISI["isi_" + i];
+    }
+  }
+ 
+  if (!complet) {
+    document.getElementById("erreurISI").style.display = "block";
+    return;
+  }
+  document.getElementById("erreurISI").style.display = "none";
+ 
+  var interpretationCode;
+  var categorieTexte;
+  var messageTexte;
+  if (total <= 7) {
+    interpretationCode = "absence";
+    categorieTexte = T[lng].catAbsence;
+    messageTexte = T[lng].msgAbsence;
+  } else if (total <= 14) {
+    interpretationCode = "legere";
+    categorieTexte = T[lng].catLegere;
+    messageTexte = T[lng].msgLegere;
+  } else if (total <= 21) {
+    interpretationCode = "moderee";
+    categorieTexte = T[lng].catModeree;
+    messageTexte = T[lng].msgModeree;
+  } else {
+    interpretationCode = "severe";
+    categorieTexte = T[lng].catSevere;
+    messageTexte = T[lng].msgSevere;
+  }
+ 
+  document.getElementById("scoreTotal").textContent = T[lng].scoreLabelPrefix + total + " / 28";
+ 
+  var elInterp = document.getElementById("interpretationTxt");
+  elInterp.innerHTML = "";
+  var spanCat = document.createElement("span");
+  spanCat.className = "cat";
+  spanCat.textContent = categorieTexte;
+  var spanMsg = document.createElement("span");
+  spanMsg.textContent = messageTexte;
+  elInterp.appendChild(spanCat);
+  elInterp.appendChild(spanMsg);
+  elInterp.className = "interpretation " + interpretationCode;
+ 
+  document.getElementById("jaugeMarqueur").style.left = "0%";
+ 
+  allerA(4);
+ 
+  setTimeout(function () {
+    var pourcentageScore = (total / 28) * 100;
+    document.getElementById("jaugeMarqueur").style.left = pourcentageScore + "%";
+  }, 150);
+ 
+  var duree = Math.round((Date.now() - tDebut) / 1000);
+ 
+  var entree = {
+    timestamp: new Date().toISOString(),
+    langue: lng,
+    age: demo.age,
+    sexe: demo.sexe,
+    filiere: demo.filiere,
+    annee: demo.annee,
+    residence: demo.residence,
+    cafeine: facteurs.cafeine,
+    ecrans: facteurs.ecrans,
+    duree_sommeil: facteurs.dureeSommeil,
+    activite_physique: facteurs.activitePhysique,
+    stress_academique: facteurs.stressAcademique,
+    charge_travail: facteurs.chargeTravail,
+    tabac: facteurs.tabac,
+    alcool: facteurs.alcool,
+    sieste: facteurs.sieste,
+    somniferes: facteurs.somniferes,
+    score_total: total,
+    interpretation: interpretationCode,
+    duree_secondes: duree
+  };
+ 
+  for (i = 0; i < 7; i++) {
+    entree["isi_" + (i + 1)] = reponsesISI["isi_" + i];
+  }
+ 
+  envoyerDonnees(entree);
+}
+ 
+// 12. Envoi des données vers Google Sheets via formulaire caché (pas de fetch)
+function envoyerDonnees(entree) {
+  try {
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = SHEETS_URL;
+    form.target = "_gs_frame";
+    form.style.display = "none";
+ 
+    var cle;
+    for (cle in entree) {
+      if (entree.hasOwnProperty(cle)) {
+        var champCache = document.createElement("input");
+        champCache.type = "hidden";
+        champCache.name = cle;
+        champCache.value = entree[cle];
+        form.appendChild(champCache);
+      }
+    }
+ 
+    document.body.appendChild(form);
+    form.submit();
+ 
+    setTimeout(function () {
+      if (form.parentNode) {
+        form.parentNode.removeChild(form);
+      }
+    }, 2000);
+ 
+    sauvegarderLocal(entree);
+    afficherToast(T[lng].toastOk, "ok");
+  } catch (erreur) {
+    sauvegarderLocal(entree);
+    afficherToast(T[lng].toastErreur, "erreur");
+  }
+}
+ 
+// 13. Sauvegarde locale de secours (localStorage)
+function sauvegarderLocal(entree) {
+  try {
+    var brut = localStorage.getItem("isi_etude");
+    var liste = brut ? JSON.parse(brut) : [];
+    liste.push(entree);
+    localStorage.setItem("isi_etude", JSON.stringify(liste));
+  } catch (erreur) {
+    // localStorage indisponible (navigation privée, etc.) — on ignore
+  }
+}
+ 
+// 14. Affichage d'un message toast temporaire
+function afficherToast(msg, cls) {
+  var toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.className = "toast" + (cls === "erreur" ? " erreur" : "");
+  toast.style.display = "block";
+  setTimeout(function () {
+    toast.style.display = "none";
+  }, 3000);
+}
+ 
+// 15. Réinitialisation complète du questionnaire
+function resetQ() {
+  reponsesISI = {};
+  demo = {};
+  facteurs = {};
+  tDebut = Date.now();
+ 
+  var champsSelect = ["age", "sexe", "filiere", "annee", "residence", "cafeine", "ecrans", "dureeSommeil", "activitePhysique", "stressAcademique", "chargeTravail", "tabac", "alcool", "sieste", "somniferes"];
+  var i;
+  for (i = 0; i < champsSelect.length; i++) {
+    document.getElementById(champsSelect[i]).selectedIndex = -1;
+  }
+ 
+  document.getElementById("erreurDemo").style.display = "none";
+  document.getElementById("erreurFacteurs").style.display = "none";
+  document.getElementById("erreurISI").style.display = "none";
+  document.getElementById("itemsISI").innerHTML = "";
+  document.getElementById("jaugeMarqueur").style.left = "0%";
+  allerA(0);
+}
+ 
+// 16. Initialisation de l'interface au chargement de la page
+appliquer();
+</script>
+</body>
+</html>
